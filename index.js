@@ -1,10 +1,22 @@
 import express from "express"
 import multer from "multer"
+import path from "path"
 
 const PORT = process.env.PORT
 const app = express()
 
-const upload = multer( { dest: "./uploads" } )
+const storage = multer.diskStorage( {
+	destination: "uploads/",
+	filename: ( req, file, cb ) => {
+
+		const ext = path.extname( file.originalname )
+		const name = Date.now() + ext
+
+		cb( null, name )
+	}
+} )
+
+const upload = multer( { storage } )
 
 app.use( express.static( "./uploads" ) )
 
